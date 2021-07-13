@@ -1,13 +1,11 @@
-%% violacoda-doc.cls
-%
+%% violacoda.cls
 % A LaTeX class for game documents and personal technical projects.
-%
 %
 % Copyright 2021 Piotr Szymczak (violacoda)
 %
 % This work consists of the following files:
-%    violacoda-doc.cls
-%    doc/violacoda-doc.tex
+%    violacoda.cls
+%    doc/violacoda.tex
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3
@@ -28,7 +26,7 @@
 % etc.
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{violacoda-doc}[07/07/2021 Violacoda document class]
+\ProvidesClass{violacoda}[07/07/2021 Violacoda document class]
 
 % Process class options
 
@@ -48,7 +46,7 @@
 \DeclareOption{sansserif}{\module@serifontfalse\stepcounter{fontoption}}
 
 \DeclareOption*{
-    \ClassError{violacoda-doc}{Unrecognised option '\CurrentOption'}{Valid options are:\MessageBreak
+    \ClassError{violacoda}{Unrecognised option '\CurrentOption'}{Valid options are:\MessageBreak
         a4paper,letterpaper,tightsqueeze,\MessageBreak serif,sansserif}
 }
 
@@ -59,17 +57,17 @@
 \ProcessOptions\relax
 
 \ifcase\thepapersizeoption\or\or\else
-    \ClassError{violacoda-doc}{a4paper and letterpaper options are mutually exclusive}
+    \ClassError{violacoda}{a4paper and letterpaper options are mutually exclusive}
         {The input file contains a statement like:\MessageBreak
-         \protect\documentclass[letterpaper,a4paper]{violacoda-doc}\MessageBreak
+         \protect\documentclass[letterpaper,a4paper]{violacoda}\MessageBreak
          You can only select one paper size, either letterpaper or a4paper.\MessageBreak
          The default is a4paper.}
 \fi
 
 \ifcase\thefontoption\or\or\else
-    \ClassError{violacoda-doc}{serif and sansserif options are mutually exclusive}
+    \ClassError{violacoda}{serif and sansserif options are mutually exclusive}
         {The input file contains a statement like:\MessageBreak
-        \protect\documentclass[serif,sansserif]{violacoda-doc}.\MessageBreak
+        \protect\documentclass[serif,sansserif]{violacoda}.\MessageBreak
         You can only select one font style, either serif or sansserif.\MessageBreak
         The default is sansserif.}
 \fi
@@ -193,7 +191,7 @@
 
 \RequirePackage[pass,paperwidth=\paperwidth,paperheight=\paperheight]{geometry} % Page size
 \RequirePackage[explicit,newparttoc]{titlesec}  % Redefine section headings
-\RequirePackage[polish]{babel}                  % Polish translations
+%\RequirePackage[polish]{babel}                  % Polish translations
 \RequirePackage{titletoc}                       % Redefine table of contents
 \RequirePackage{array}                          % Format table headings
 \RequirePackage{booktabs}                       % Underline table headings
@@ -243,6 +241,8 @@
 \renewcommand\@makefntext[1]{\leftskip=0.5em\hskip-0.5em\makebox[0.5em]{\@makefnmark}#1}
 
 % Title Page
+%
+% TODO: Consider deleting @date and @quote from the title page.
 
 \renewcommand\maketitle{\hypersetup{pageanchor=false}   % No internal links to title page allowed
 \begin{titlepage}
@@ -258,7 +258,7 @@
 \@contact
 \vfill
 \@quote
-\normalsize utworzono \@date \par
+\normalsize Created \@date \par
 \end{titlepage}
 \hypersetup{pageanchor=true}
 \global\let\maketitle\relax

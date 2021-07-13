@@ -1,0 +1,8 @@
+build
+temp
+
+.aux
+.log
+.fls
+.out
+.pdf
