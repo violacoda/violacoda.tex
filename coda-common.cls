@@ -1,11 +1,10 @@
-%% violacoda.cls
-% A LaTeX class for game documents and personal technical projects.
+%% coda-common.cls
+% A LaTeX class for GDC, research and note taking.
 %
 % Copyright 2021 Piotr Szymczak (violacoda)
 %
 % This work consists of the following files:
-%    violacoda.cls
-%    doc/violacoda.tex
+%    coda-common.cls
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3
@@ -18,15 +17,9 @@
 % This work has the LPPL maintenance status `author-maintained'. 
 % 
 % The Author and Maintainer of this work is Piotr Szymczak (violacoda)
-%
-%
-% TODO: This class is early in development
-% English & Polish versions
-% Advanced font options
-% etc.
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{violacoda}[07/07/2021 Violacoda document class]
+\ProvidesClass{coda-common}[31/10/2021 Violacoda common document class]
 
 % Process class options
 
@@ -46,28 +39,27 @@
 \DeclareOption{sansserif}{\module@serifontfalse\stepcounter{fontoption}}
 
 \DeclareOption*{
-    \ClassError{violacoda}{Unrecognised option '\CurrentOption'}{Valid options are:\MessageBreak
+    \ClassError{coda-common}{Unrecognised option '\CurrentOption'}{Valid options are:\MessageBreak
         a4paper,letterpaper,tightsqueeze,\MessageBreak serif,sansserif}
 }
 
-\ExecuteOptions{a4paper}         % Default paper size is A4
-
-\ExecuteOptions{sans-serif}      % Default font option is serif
+\ExecuteOptions{a4paper}    
+\ExecuteOptions{serif}    
 
 \ProcessOptions\relax
 
 \ifcase\thepapersizeoption\or\or\else
     \ClassError{violacoda}{a4paper and letterpaper options are mutually exclusive}
         {The input file contains a statement like:\MessageBreak
-         \protect\documentclass[letterpaper,a4paper]{violacoda}\MessageBreak
-         You can only select one paper size, either letterpaper or a4paper.\MessageBreak
-         The default is a4paper.}
+        \protect\documentclass[letterpaper,a4paper]{coda-common}\MessageBreak
+        You can only select one paper size, either letterpaper or a4paper.\MessageBreak
+        The default is a4paper.}
 \fi
 
 \ifcase\thefontoption\or\or\else
     \ClassError{violacoda}{serif and sansserif options are mutually exclusive}
         {The input file contains a statement like:\MessageBreak
-        \protect\documentclass[serif,sansserif]{violacoda}.\MessageBreak
+        \protect\documentclass[serif,sansserif]{coda-common}.\MessageBreak
         You can only select one font style, either serif or sansserif.\MessageBreak
         The default is sansserif.}
 \fi
@@ -92,20 +84,20 @@
 
 % Set page margins
 
-\setlength{\oddsidemargin}{0.8cm}
-\setlength{\evensidemargin}{0.8cm}
+\setlength{\oddsidemargin}{0.7cm}
+\setlength{\evensidemargin}{0.7cm}
 
-\setlength{\topmargin}{2.6cm}
+\setlength{\topmargin}{1.7cm}
 
-\setlength{\textheight}{25.4cm}
-\setlength{\textwidth}{19.4cm}
+\setlength{\textheight}{26.6cm}
+\setlength{\textwidth}{19.6cm}
 
 \setlength{\marginparsep}{0cm}
 \setlength{\marginparwidth}{0cm}
 
 \setlength{\footskip}{0.7cm}
 
-\setlength{\columnsep}{1.15cm}
+\setlength{\columnsep}{0.4cm}
 
 \pagenumbering{arabic}
 
@@ -116,7 +108,7 @@
     \addtolength{\topmargin}{-\headheight}
     \addtolength{\topmargin}{-\headsep}
     \RequirePackage{fancyhdr}                   % Add headers and footers
-    \fancypagestyle{plain}{
+    \fancypagestyle{plain}{%
         \fancyhf{}                              % Clear all header and footer fields
         \fancyhead[LO,RE]{\slshape \leftmark}
         \fancyhead[RO,LE]{\slshape \rightmark}
@@ -150,26 +142,15 @@
 % Process font options
 
 \RequirePackage[T1]{fontenc}                    % Use T1 (8-bit) font encoding
-\RequirePackage[utf8]{inputenc}
+\RequirePackage{fontspec}                       % Fonts
 \RequirePackage{lmodern}                        % Use Latin Modern instead of Computer Modern for symbols etc.
 \RequirePackage{xfrac}                          % Get a good-looking 1/2 symbol
 
 \newcommand\half{\sfrac{1}{2}}                  % Get a good-looking 1/2 symbol
 
 \ifmodule@seriffont
-    \IfFileExists{souvenir.sty}{                % If ITC Souvenir font is installed in this LaTeX distribution
-        \RequirePackage{souvenir}               % Use ITC Souvenir as serifed font
-        \renewcommand{\bldefault}{d}            % Use demi-bold instead of bold
-        % Get a good-looking copyright (C) symbol
-        \renewcommand*\copyright{{\usefont{T1}{lmr}{m}{n}\textcopyright}}
-        % Registered trademark (R) symbol
-        \newcommand*\registered{{\usefont{T1}{lmr}{m}{n}\textregistered}}
-        \renewcommand\half{{\usefont{T1}{lmr}{m}{n}\sfrac{1}{2}}}
-    }{
-        \ClassWarning{violacoda-doc}{%
-            ITC Souvenir not detected, substituting Bookman as default serifed font.}
-        \RequirePackage{bookman}                % Use Bookman as serifed font
-    }
+    \setmainfont{Source Serif Pro}
+    \setmonofont{Iosevka Nerd Font}
     \renewcommand*\familydefault{\rmdefault}    % Default to serifed font
 \else
     \RequirePackage{avant}                      % Use URW Gothic as default sans-serif font
@@ -191,14 +172,13 @@
 
 \RequirePackage[pass,paperwidth=\paperwidth,paperheight=\paperheight]{geometry} % Page size
 \RequirePackage[explicit,newparttoc]{titlesec}  % Redefine section headings
-%\RequirePackage[polish]{babel}                  % Polish translations
 \RequirePackage{titletoc}                       % Redefine table of contents
 \RequirePackage{array}                          % Format table headings
 \RequirePackage{booktabs}                       % Underline table headings
 \RequirePackage{caption}                        % Allow non-numbered figure and table captions
 \RequirePackage{framed}                         % Boxed text
 \RequirePackage{xstring}                        % Manipulate strings
-\RequirePackage{graphicx}                       % Allow images and text across two columns
+\RequirePackage{graphicx,calc}                  % Allow images and text across two columns
 
 \graphicspath{ {images/} }
 
@@ -257,8 +237,6 @@
 \@copyright
 \@contact
 \vfill
-\@quote
-\normalsize Created \@date \par
 \end{titlepage}
 \hypersetup{pageanchor=true}
 \global\let\maketitle\relax
@@ -268,10 +246,8 @@
 \global\let\@abstract\@empty
 \global\let\@copyright\@empty
 \global\let\@contact\@mempty
-\global\let\@quote\@empty
 \global\let\title\relax
 \global\let\author\relax
-\global\let\date\today
 }
 
 \newcommand\showtitle[1][\@title]{\begin{center}
@@ -287,7 +263,6 @@
 \newcommand\@abstract{\relax}
 \newcommand\@copyright{\relax}
 \newcommand\@contact{\relax}
-\newcommand\@quote{\relax}
 
 \newcommand{\subtitle}[1]{\gdef\@subtitle{\vskip 0.5em \LARGE \textbf{\MakeUppercase{#1}}}}
 \newcommand{\coverimage}[1]{\gdef\@coverimg{\vskip 0.5em \includegraphics[width=\textwidth]{#1} \par}}
@@ -304,11 +279,6 @@
 {#2} & {#3} & {#4}
 \end{tabular}}}
 
-\newcommand{\titlequote}[1]{\gdef\@quote{
-\begin{center}
-\vskip 0.5em \Large \emph{``#1''} 
-\end{center} \par}}
-
 % Table of Contents
 
 \renewcommand\tableofcontents{%
@@ -316,7 +286,7 @@
 }
 
 \addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
-\titlecontents{part}[0em]{\normalsize\bfseries}{CZĘŚĆ \thecontentslabel :\MakeUppercase}{}{\quad\thecontentspage}[\vspace{1.5ex plus .2ex}]
+\titlecontents{part}[0em]{\normalsize\bfseries}{CZĘŚĆ \thecontentslabel :\MakeUppercase}{}{\quad\thecontentspage}[\vspace{1.ex plus .2ex}]
 \titlecontents*{section}[0em]{\normalsize}{}{}{~\thecontentspage}[\unskip, ][.\vspace{1.5ex plus .2ex}]
 \titlecontents*{subsection}[0em]{\normalsize}{}{}{~\thecontentspage}[\unskip, ][.\vspace{1.5ex plus .2ex}]
 \titlecontents*{subsubsection}[0em]{\normalsize}{}{}{~\thecontentspage}[\unskip, ][.\vspace{1.5ex plus .2ex}]
@@ -394,43 +364,7 @@
 }]
 }
 
-% Tables
-
-%\newcolumntype{b}{>{\bfseries}c}        % New column type 'b' for bold, centred headings
-%\newcounter{numcols@module}             % Counter to keep track of how many columns are in the table
-
-% Underline table headers
-
-%\newtoks\module@tableul
-%\newcommand{\tableul}[1]{%
-%    \noalign{%
-%        \global\module@tableul={}%
-%        \toks@={\cmidrule(1{\tabcolsep}r{\tabcolsep})}%
-%        \count@=\z@
-%        \loop\ifnum\count@<#1\relax
-%            \advance\count@\@ne
-%            \edef\module@temp{\the\toks@{\the\count@-\the\count@}}%
-%            \global\module@tableul\expandafter{\the\expandafter\module@tableul\module@temp}%
-%        \repeat
-%    }%
-%    \the\module@tableul
-%}
-
-% Typeset the table heading
-% Takes a column type as an optional argument (defaults to 'c' for centred text)
-
-%\newcommand\tableheader[2][c]{{%
-%    \edef\lbracetoken{\string{}
-%    \edef\rbracetoken{\string}}
-%    \StrCount{#2}{&}[\numamps]\global\setcounter{numcols@module}{\numamps}\stepcounter{numcols@module}
-%    \newcommand\source{\string\multicolumn\lbracetoken 1\rbracetoken\lbracetoken#1\rbracetoken\lbracetoken#2\rbracetoken}
-%    \newcommand\replace{\rbracetoken&\string\multicolumn\lbracetoken 1\rbracetoken\lbracetoken#1\rbracetoken\lbracetoken#2\rbracetoken}
-%    \StrSubstitute{\source}{ & }{\replace}[\tmptblhdr]
-%    \StrExpand{\tmptblhdr}{\tmptblhdrexpand}
-%    \tokenize{\tmptbltok}{\tmptblhdr}
-%    \global\let\tableheader@module\tmptbltok
-%}\\[-2ex] % hack to get around the fact that it's not allowed to have non-expandable text in the same cell as \multicolumn
-%\tableheader@module\\
-%\tableul{\thenumcols@module}
-%}
-
+\newenvironment{onecolumnfloat}[1][t]{%
+\let\@floatboxreset\relax%
+\let\@parboxrestore\relax%
+\begin{table*}[#1]\unskip}{\end{table*}}
