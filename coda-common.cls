@@ -84,20 +84,23 @@
 
 % Set page margins
 
-\setlength{\oddsidemargin}{0.7cm}
-\setlength{\evensidemargin}{0.7cm}
+\setlength{\oddsidemargin}{0.5cm}
+\setlength{\evensidemargin}{0.5cm}
 
-\setlength{\topmargin}{1.7cm}
+\setlength{\topmargin}{0.4cm}
 
-\setlength{\textheight}{26.6cm}
-\setlength{\textwidth}{19.6cm}
+\setlength{\textheight}{27.6cm}
+\setlength{\textwidth}{20cm}
 
 \setlength{\marginparsep}{0cm}
 \setlength{\marginparwidth}{0cm}
 
-\setlength{\footskip}{0.7cm}
+\setlength{\footskip}{0.6cm}
+\setlength{\columnsep}{0.3cm}
 
-\setlength{\columnsep}{0.4cm}
+\setlength{\parindent}{12pt}
+
+\setcounter{tocdepth}{1}
 
 \pagenumbering{arabic}
 
@@ -105,8 +108,10 @@
     \setlength{\headheight}{0cm}
     \setlength{\headsep}{0cm}
 \else
-    \addtolength{\topmargin}{-\headheight}
-    \addtolength{\topmargin}{-\headsep}
+    %\addtolength{\topmargin}{-\headheight}
+    %\addtolength{\topmargin}{-\headsep}
+    \setlength{\headheight}{0.4cm}
+    \setlength{\headsep}{0.2cm}
     \RequirePackage{fancyhdr}                   % Add headers and footers
     \fancypagestyle{plain}{%
         \fancyhf{}                              % Clear all header and footer fields
@@ -150,7 +155,7 @@
 
 \ifmodule@seriffont
     \setmainfont{Source Serif Pro}
-    \setmonofont{Iosevka Nerd Font}
+    \setmonofont{agave Nerd Font}
     \renewcommand*\familydefault{\rmdefault}    % Default to serifed font
 \else
     \RequirePackage{avant}                      % Use URW Gothic as default sans-serif font
@@ -173,12 +178,23 @@
 \RequirePackage[pass,paperwidth=\paperwidth,paperheight=\paperheight]{geometry} % Page size
 \RequirePackage[explicit,newparttoc]{titlesec}  % Redefine section headings
 \RequirePackage{titletoc}                       % Redefine table of contents
+\RequirePackage{changepage}                     % Change page layout
+\RequirePackage[normalem]{ulem}                 % Underlining
 \RequirePackage{array}                          % Format table headings
 \RequirePackage{booktabs}                       % Underline table headings
 \RequirePackage{caption}                        % Allow non-numbered figure and table captions
 \RequirePackage{framed}                         % Boxed text
 \RequirePackage{xstring}                        % Manipulate strings
 \RequirePackage{graphicx,calc}                  % Allow images and text across two columns
+\RequirePackage{amssymb}                        % Math symbols
+\RequirePackage{ifthen}                         % Control flow
+\RequirePackage{multicol}                       % Multi-column environment
+\RequirePackage{longtable}                      % Multi-page tables
+\RequirePackage{tabularx}                       % Better tabular
+\RequirePackage{supertabular}                   % Alternative multi-page tables
+\RequirePackage{makecell}                       % Advanced cell formating
+\RequirePackage{epigraph}                       % Epigraph formating
+\RequirePackage{subfiles}                       % Multi-file project setup
 
 \graphicspath{ {images/} }
 
@@ -205,13 +221,24 @@
 
 \ifmodule@tightsqueeze
     \titlespacing*{\part}{0pt}{0pt}{0pt}
-    \titlespacing*{\section}{0pt}{0.5ex plus .2ex}{0.5ex plus .2ex}
-    \titlespacing*{\subsection}{0pt}{0.5ex plus .2ex}{0.5ex plus .2ex}
+    \titlespacing*{\section}{0pt}{1ex plus .2ex}{0pt}
+    \titlespacing*{\subsection}{0pt}{1ex plus .2ex}{0pt}
+    \titlespacing*{\subsubsection}{0pt}{1ex plus .2ex}{0pt}
+    \titlespacing*{\paragraph}{0pt}{1ex plus .2ex}{0pt}
     \FrameSep5pt
     \renewcommand{\arraystretch}{1}
 \else
     \renewcommand{\arraystretch}{1.2}           % Default: increase the table row spacing a little
 \fi
+
+% Default section spacing, for references
+%
+%\titlespacing*{\part} {0pt}{50pt}{40pt}
+%\titlespacing*{\section} {0pt}{3.5ex plus 1ex minus .2ex}{2.3ex plus .2ex}
+%\titlespacing*{\subsection} {0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+%\titlespacing*{\subsubsection}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+%\titlespacing*{\paragraph} {0pt}{3.25ex plus 1ex minus .2ex}{1em}
+%\titlespacing*{\subparagraph} {\parindent}{3.25ex plus 1ex minus .2ex}{1em}
 
 % Footnote options
 
@@ -219,10 +246,6 @@
 \renewcommand*{\thefootnote}{\fnsymbol{footnote}}           
 % Footnote indentation
 \renewcommand\@makefntext[1]{\leftskip=0.5em\hskip-0.5em\makebox[0.5em]{\@makefnmark}#1}
-
-% Title Page
-%
-% TODO: Consider deleting @date and @quote from the title page.
 
 \renewcommand\maketitle{\hypersetup{pageanchor=false}   % No internal links to title page allowed
 \begin{titlepage}
@@ -237,6 +260,7 @@
 \@copyright
 \@contact
 \vfill
+\ifthenelse{\boolean{showtitledate}}{\Large \today}{}
 \end{titlepage}
 \hypersetup{pageanchor=true}
 \global\let\maketitle\relax
@@ -279,17 +303,42 @@
 {#2} & {#3} & {#4}
 \end{tabular}}}
 
-% Table of Contents
+\newboolean{showtitledate}
+\setboolean{showtitledate}{false}
+
+%% Table of Contents
 
 \renewcommand\tableofcontents{%
-    \noindent\Large\textbf{\MakeUppercase\contentsname}\vspace{1em}\@starttoc{toc}
+  \noindent\Large\textbf{SPIS TREŚCI}\vspace{1em}\@starttoc{toc} % Not english friendly, Babel crashes on me.
 }
 
-\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
-\titlecontents{part}[0em]{\normalsize\bfseries}{CZĘŚĆ \thecontentslabel :\MakeUppercase}{}{\quad\thecontentspage}[\vspace{1.ex plus .2ex}]
-\titlecontents*{section}[0em]{\normalsize}{}{}{~\thecontentspage}[\unskip, ][.\vspace{1.5ex plus .2ex}]
-\titlecontents*{subsection}[0em]{\normalsize}{}{}{~\thecontentspage}[\unskip, ][.\vspace{1.5ex plus .2ex}]
-\titlecontents*{subsubsection}[0em]{\normalsize}{}{}{~\thecontentspage}[\unskip, ][.\vspace{1.5ex plus .2ex}]
+\titlecontents{part}[0em]%
+{\normalsize\bfseries \vspace{1ex}}%
+{CZĘŚĆ \thecontentslabel : \MakeUppercase}%
+{}%
+{\quad\thecontentspage}%
+[]
+
+\titlecontents{section}[1em]%
+{\normalsize}%
+{}%
+{}%
+{\quad\thecontentspage}%
+[]
+
+\titlecontents{subsection}[1em]%
+{\normalsize\bfseries}%
+{\thecontentslabel . }%
+{}%
+{\quad\thecontentspage}%
+[\vspace{-0.3ex}]
+
+\titlecontents*{subsubsection}[2em]%
+{\normalsize}%
+{}%
+{}%
+{}%
+[\unskip , ][.\vspace{0.4ex}]
 
 % Running heads (used on A4 paper size only)
 
@@ -309,15 +358,15 @@
 \renewcommand\thepart{\arabic{part}}
 \renewcommand\thesection{}
 \renewcommand\thesubsection{\arabic{subsection}}
-\renewcommand\thesubsubsection{\arabic{subsection}\alph{subsubsection}}
+\renewcommand\thesubsubsection{\arabic{subsection}.\arabic{subsubsection}}
 
 \titleformat{\part}[block]
 {\LARGE\bfseries\filcenter}
 {\LARGE CZĘŚĆ \thepart:}{0.5em}{\MakeUppercase{#1}}
 
 \titleformat{\section}[hang]
-{\Large\bfseries\filcenter}
-{}{0em}{\MakeUppercase{#1}}
+{\Large\bfseries\filright}
+{}{0em}{\MakeUppercase{#1}}[]
 
 \titleformat{name=\section,numberless}[block]                   % How to handle \section*
 {\Large\bfseries\filcenter}
@@ -328,17 +377,12 @@
 {\thesubsection.}{0.5em}{\MakeUppercase{#1}}
 
 \titleformat{\subsubsection}[hang]
-{\normalfont\bfseries\filright}
+{\small\bfseries\filright}
 {\thesubsubsection.}{0.5em}{\MakeUppercase{#1}}
 
-% Default section spacing, for references
-%
-%\titlespacing*{\part} {0pt}{50pt}{40pt}
-%\titlespacing*{\section} {0pt}{3.5ex plus 1ex minus .2ex}{2.3ex plus .2ex}
-%\titlespacing*{\subsection} {0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
-%\titlespacing*{\subsubsection}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
-%\titlespacing*{\paragraph} {0pt}{3.25ex plus 1ex minus .2ex}{1em}
-%\titlespacing*{\subparagraph} {\parindent}{3.25ex plus 1ex minus .2ex}{1em}
+\titleformat{\paragraph}[hang]
+{\small\bfseries\filcenter}
+{\theparagraph.}{0.5em}{\MakeUppercase{#1}}
 
 % Boxed text 
 
@@ -360,7 +404,7 @@
     \setlength{\parskip}{\tmpparskip}
     \fussy
     #1
-    \vspace{2ex}
+    \vspace{0ex}
 }]
 }
 
@@ -368,3 +412,43 @@
 \let\@floatboxreset\relax%
 \let\@parboxrestore\relax%
 \begin{table*}[#1]\unskip}{\end{table*}}
+
+%\newcolumntype{b}{>{\bfseries}c}
+\newcounter{numcols@module}
+
+\newtoks\module@tableul
+\newcommand{\tableul}[1]{%
+    \noalign{%
+        \global\module@tableul={}%
+        \toks@={\cmidrule(1{\tabcolsep}r{\tabcolsep})}%
+        \count@=\z@
+        \loop\ifnum\count@<#1\relax
+            \advance\count@\@ne
+            \edef\module@temp{\the\toks@{\the\count@-\the\count@}}%
+            \gobal\module@tableul\expandafter{\the\expandafter\module@tableul\module@temp}%
+        \repeat
+    }%
+    \the\module@tableul
+}
+
+\newcommand\tableheader[2][c]{{%
+    \edef\lbracetoken{\string{}
+    \edef\rbracetoken{\string}}
+    \StrCount{#2}{&}[\numamps]\global\setcounter{numcols@module}{\numamps}\stepcounter{numcols@module}
+    \newcommand\source{\string\multicolumn\lbracetoken 1\rbracetoken\lbracetoken#1\rbracetoken\lbracetoken#2\rbracetoken}
+    \newcommand\replace{\rbracetoken&\string\multicolumn\lbracetoken 1\rbracetoken\lbracetoken#1\rbracetoken\lbracetoken}
+    \StrSubstitute{\source}{ & }{\replace}[\tmptblhdr]
+    \StrExpand{\tmptblhdr}{\tmptblhdrexpand}
+    \tokenize{\tmptbltok}{\tmptblhdr}
+    \global\let\tableheader@module\tmptbltok
+}\\[-2ex] % hack to get around the fact that it's not allowed to have non-expandable text in the same cell as \multicolumn
+\tableheader@module\\
+\tableul{\thenumcols@module}
+}
+
+\newenvironment{codaepigraphenv}
+{\begin{flushright}\em\normalsize}
+{\end{flushright}}
+
+\setlength\epigraphrule{0pt}
+\renewcommand{\textflush}{codaepigraphenv}
